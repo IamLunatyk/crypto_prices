@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        overflow: hidden;
+      }
+
+      .video-background {
+        position: fixed;
+        right: 0;
+        bottom: 0;
+        min-width: 100%;
+        min-height: 100%;
+        width: auto;
+        height: auto;
+        z-index: -100;
+      }
+
+      .crypto-prices {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        background-color: rgba(95, 95, 95, 0.8);
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+      }
+
+      .crypto-prices .price {
+        margin: 10px;
+        padding: 10px;
+        font-size: 1.2em;
+        font-weight: bold;
+        color: white;
+      }
+    </style>
+  </head>
+  <body>
+    <video autoplay loop muted class="video-background">
+      <source src="money.mp4" type="video/mp4" />
+    </video>
+    <div class="crypto-prices" id="cryptoPrices"></div>
+
+    <script>
+      function loadCryptoPrices() {
+        console.log("get data");
+
+        fetch("crypto_prices.php")
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error("Problem z pobieraniem danych");
+            }
+
+            return response.json();
+          })
+          .then((data) => {
+            if (data && Array.isArray(data)) {
+              const pricesContainer = document.getElementById("cryptoPrices");
+              pricesContainer.innerHTML = "";
+
+              data.forEach((crypto) => {
+                const priceDiv = document.createElement("div");
+                priceDiv.className = "price";
+                priceDiv.textContent = `${crypto.symbol} : ${crypto.price}`;
+                pricesContainer.appendChild(priceDiv); // Poprawiona nazwa zmiennej
+              });
+            } else {
+              console.error("Nieprawidłowa odpowiedź z serwera: ", data);
+            }
+          })
+          .catch((error) => {
+            console.error("Błąd przy ładowaniu danych: ", error);
+            const pricesContainer = document.getElementById("cryptoPrices");
+            pricesContainer.innerHTML = "<p>Błąd przy ładowaniu danych</p>";
+          });
+      }
+
+      setInterval(loadCryptoPrices, 15000);
+      loadCryptoPrices();
+    </script>
+  </body>
+</html>
