@@ -54,3 +54,4 @@ This project uses the CoinGecko API to fetch real-time cryptocurrency prices.
 Live Demo
 
 Test the live version here: Crypto Prices.
+https://cryptoprices.infy.uk/
